@@ -1,6 +1,8 @@
 ---
 title: "213 Data Analysis"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Loading Data
