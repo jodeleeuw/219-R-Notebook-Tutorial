@@ -1,0 +1,83 @@
+---
+title: "213 Data Analysis"
+output: html_notebook
+---
+
+# Loading Data
+
+We will start by loading in our data.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+load('data/voltage_data.tidy.Rdata')
+```
+
+The data has five columns. 
+
+* **t** represents the time in milliseconds relative to the critical word.
+* **electrode** is the number of the electrode on the EGI 128-electrode cap.
+* **voltage** is measured in microvolts.
+* **subject** is an anonymous subject code.
+* **condition** is one of three conditions: Anomalous, Literal, or Metaphorical.
+
+A subset of the data is shown below.
+
+```{r echo=FALSE}
+all.data[1:1000, ]
+```
+
+# Grand Average Waveforms
+
+Our analysis will be on three midline electrodes, Fz (EGI #11), Pz (EGI #62), and Cz (EGI #129). The target time window for the expected N400 effect is 300 to 500ms.
+
+```{r}
+target.electrodes <- c(11,62,129)
+n400.window <- 300:500
+```
+
+Extracting data...
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+
+grand.average.data <- all.data %>% filter(electrode %in% target.electrodes) %>% 
+  group_by(t, condition, electrode) %>% summarize(mean.voltage = mean(voltage))
+```
+
+Plotting data...
+
+```{r}
+library(ggplot2)
+
+ggplot(grand.average.data, aes(x=t, y=mean.voltage, color=condition))+
+  facet_wrap(~electrode)+
+  geom_vline(xintercept = 0)+
+  geom_hline(yintercept = 0)+
+  annotate("rect", fill="black", alpha=0.1, xmin=min(n400.window),xmax=max(n400.window), ymin=-5, ymax=5)+
+  labs(x="Time relative to stimulus onset (ms)", y="Mean voltage (microvolts)")+
+  geom_line()+
+  theme_minimal()
+```
+
+
+# Statistical Analysis
+
+Gathering data for the ANOVA.
+
+```{r}
+
+anova.data <- all.data %>% filter(electrode %in% target.electrodes, t %in% n400.window) %>%
+  group_by(subject, electrode, condition) %>% summarize(mean.voltage = mean(voltage))
+
+anova.data$electrode <- as.factor(anova.data$electrode)
+
+```
+
+Computing ANOVA.
+
+```{r message=FALSE, warning=FALSE}
+library(ez)
+
+result <- ezANOVA(anova.data, dv=mean.voltage, wid=subject, within=c(electrode, condition))
+
+result$ANOVA
+```
