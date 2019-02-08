@@ -5,6 +5,33 @@ output:
     df_print: paged
 ---
 
+# Behavioral Data
+
+```{r}
+behavioral.data <- read.csv('data/behavioral_data_tidy.csv')
+```
+
+The data has three columns
+
+```{r}
+behavioral.data
+```
+
+```{r}
+t.test.data <- behavioral.data %>% filter(Condition %in% c('Literal', 'Metaphorical'))
+t.test(CorrectResponses ~ Condition, data=t.test.data, paired=T)
+t.test.data <- behavioral.data %>% filter(Condition %in% c('Literal', 'Anomalous'))
+t.test(CorrectResponses ~ Condition, data=t.test.data, paired=T)
+```
+
+# Graphing Behavioral Data
+
+```{r}
+library(ggplot2)
+
+ggplot(behavioral.data, aes(x=Condition, y=CorrectResponses))+
+  geom_boxplot()
+```
 # Loading Data
 
 We will start by loading in our data.

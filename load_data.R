@@ -25,6 +25,12 @@ for(f in all.files){
 
 # write_csv(all.data, path="data/voltage_data_tidy.csv")
 
-
 # so I will use .Rdata format instead, which has much better compression.
 save(all.data, file="data/voltage_data.tidy.Rdata")
+
+# behavioral data ####
+beh.data <- read_csv('data/behavioral_data.csv')
+
+beh.data.tidy <- beh.data %>% gather(Condition, CorrectReponses, 2:4)
+
+write_csv(beh.data.tidy, path="data/behavioral_data_tidy.csv")
