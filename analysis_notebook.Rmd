@@ -24,17 +24,31 @@ The data has three columns
 behavioral.data
 ```
 
+Let's summarize the behavioral data to get means and SDs for each condition.
+
 ```{r}
-t.test.data <- behavioral.data %>% filter(Condition %in% c('Literal', 'Metaphorical'))
-t.test(CorrectResponses ~ Condition, data=t.test.data, paired=T)
-t.test.data <- behavioral.data %>% filter(Condition %in% c('Literal', 'Anomalous'))
-t.test(CorrectResponses ~ Condition, data=t.test.data, paired=T)
+behavioral.data <- behavioral.data %>% mutate(PercentCorrect = (CorrectResponses / 29)*100)
+behavioral.data %>% 
+  group_by(Condition) %>% 
+  summarize(M=mean(PercentCorrect), SD = sd(PercentCorrect))
+```
+
+Let's run two sets of t-tests, to see if there is a difference in accuracy between Literal and Metaphorical and/or Literal and Anomalous.
+
+```{r}
+t.test.data.literal.metaphorical <- behavioral.data %>% filter(Condition %in% c('Literal', 'Metaphorical'))
+t.test(CorrectResponses ~ Condition, data=t.test.data.literal.metaphorical, paired=T)
+```
+
+```{r}
+t.test.data.literal.anomalous <- behavioral.data %>% filter(Condition %in% c('Literal', 'Anomalous'))
+t.test(CorrectResponses ~ Condition, data=t.test.data.literal.anomalous, paired=T)
 ```
 
 # Graphing Behavioral Data
 
 ```{r}
-ggplot(behavioral.data, aes(x=Condition, y=CorrectResponses))+
+ggplot(behavioral.data, aes(x=Condition, y=PercentCorrect))+
   geom_boxplot()
 ```
 
