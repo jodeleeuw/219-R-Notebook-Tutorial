@@ -5,10 +5,17 @@ output:
     df_print: paged
 ---
 
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(ez)
+```
+
 # Behavioral Data
 
 ```{r}
-behavioral.data <- read.csv('data/behavioral_data_tidy.csv')
+behavioral.data <- read_csv('data/behavioral_data_tidy.csv')
 ```
 
 The data has three columns
@@ -27,17 +34,16 @@ t.test(CorrectResponses ~ Condition, data=t.test.data, paired=T)
 # Graphing Behavioral Data
 
 ```{r}
-library(ggplot2)
-
 ggplot(behavioral.data, aes(x=Condition, y=CorrectResponses))+
   geom_boxplot()
 ```
-# Loading Data
+
+# Loading EEG Data
 
 We will start by loading in our data.
 
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
-load('data/voltage_data.tidy.Rdata')
+eeg.data <- read_csv('data/voltage_data_tidy.csv')
 ```
 
 The data has five columns. 
@@ -51,7 +57,7 @@ The data has five columns.
 A subset of the data is shown below.
 
 ```{r echo=FALSE}
-all.data[1:1000, ]
+eeg.data[1:1000, ]
 ```
 
 # Grand Average Waveforms
@@ -68,7 +74,7 @@ Extracting data...
 ```{r message=FALSE, warning=FALSE}
 library(dplyr)
 
-grand.average.data <- all.data %>% filter(electrode %in% target.electrodes) %>% 
+grand.average.data <- eeg.data %>% filter(electrode %in% target.electrodes) %>% 
   group_by(t, condition, electrode) %>% summarize(mean.voltage = mean(voltage))
 ```
 
@@ -94,7 +100,7 @@ Gathering data for the ANOVA.
 
 ```{r}
 
-anova.data <- all.data %>% filter(electrode %in% target.electrodes, t %in% n400.window) %>%
+anova.data <- eeg.data %>% filter(electrode %in% target.electrodes, t %in% n400.window) %>%
   group_by(subject, electrode, condition) %>% summarize(mean.voltage = mean(voltage))
 
 anova.data$electrode <- as.factor(anova.data$electrode)
@@ -104,8 +110,6 @@ anova.data$electrode <- as.factor(anova.data$electrode)
 Computing ANOVA.
 
 ```{r message=FALSE, warning=FALSE}
-library(ez)
-
 result <- ezANOVA(anova.data, dv=mean.voltage, wid=subject, within=c(electrode, condition))
 
 result$ANOVA
