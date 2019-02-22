@@ -1,8 +1,6 @@
 ---
 title: "213 Data Analysis"
-output:
-  html_document:
-    df_print: paged
+output: html_notebook
 ---
 
 ```{r}
@@ -113,12 +111,10 @@ ggplot(grand.average.data, aes(x=t, y=mean.voltage, color=condition))+
 Gathering data for the ANOVA.
 
 ```{r}
-
 anova.data <- eeg.data %>% filter(electrode %in% target.electrodes, t %in% n400.window) %>%
   group_by(subject, electrode, condition) %>% summarize(mean.voltage = mean(voltage))
 
 anova.data$electrode <- as.factor(anova.data$electrode)
-
 ```
 
 Computing ANOVA.
