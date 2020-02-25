@@ -3,7 +3,7 @@ title: "213 Data Analysis"
 output: html_notebook
 ---
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -12,7 +12,7 @@ library(ez)
 
 # Behavioral Data
 
-```{r}
+```{r message=FALSE}
 behavioral.data <- read_csv('data/behavioral_data_tidy.csv')
 ```
 
