@@ -1,0 +1,131 @@
+---
+title: "An ERP study on metaphorical language processing"
+author: "Josh de Leeuw"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+#| label: Load R libraries
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(ez)
+
+```
+
+## Introduction
+
+This is a study about metaphor using ERP methods.
+
+## Methods
+
+```{r}
+#| echo: false
+#| message: false
+#| label: Load behavioral data
+
+behavioral.data <- read_csv('data/behavioral_data_tidy.csv')
+
+```
+
+```{r}
+#| echo: false
+#| label: Count number of subjects
+
+n.subjects <- behavioral.data %>% 
+  group_by(Subject) %>% 
+  tally() %>% 
+  nrow()
+```
+
+### Participants
+
+`r n.subjects` Vassar students participated in this study.
+
+### Procedure
+
+Read sentences. Record brainwaves.
+
+### EEG Recordings
+
+Put electrodes on head. Voltages go brrrrrrr.
+
+## Results
+
+### Behavior
+
+```{r}
+#| label: Summarize behavioral data
+#| message: false
+#| echo: false
+
+behavioral.summary <- behavioral.data %>%
+  mutate(PercentCorrect = CorrectResponses/29 * 100) %>%
+  group_by(Condition) %>%
+  summarize(M = mean(PercentCorrect), SD = sd(PercentCorrect))
+
+```
+
+We checked for comprehension accuracy of the sentences by looking at the percent of correct responses for each sentence type. Participants answered the comprehension check questions more accurately in the literal (*M* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(SD) %>% round(2)`%) and anomalous (*M* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(SD) %>% round(2)`%) conditions than in the metaphorical condition (*M* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(SD) %>% round(2)`%), suggesting that the metaphorical meanings were slightly more difficult to understand (see @fig-behavioral-accuracy ).
+
+```{r}
+#| label: fig-behavioral-accuracy
+#| fig-cap: The number of correct responses to the comprehension questions was slightly lower for metaphorical sentences.
+#| echo: false
+
+ggplot(behavioral.data, aes(x=Condition, y=CorrectResponses, color=Condition))+
+  geom_jitter(width=0.25, height = 0, size=2)+
+  scale_color_hue(guide="none")+
+  labs(x="Sentence Type", y="Number of Correct Responses\n(out of 29)")+
+  theme_bw()
+```
+
+### ERP
+
+```{r}
+#| label: Load EEG data
+#| echo: false
+#| message: false
+
+eeg.data <- read_csv('data/voltage_data_tidy.csv')
+```
+
+```{r}
+#| label: Define ERP electrodes and window
+#| echo: false
+
+target.electrodes <- c(11,62,129)
+target.window <- 300:500
+```
+
+```{r}
+#| label: Calculate grand average ERPs
+#| echo: false
+#| message: false
+
+grand.average.erp <- eeg.data %>%
+  group_by(t, electrode, condition) %>%
+  filter(electrode %in% target.electrodes) %>%
+  summarize(m = mean(voltage), se = sd(voltage)/sqrt(n()))
+```
+
+```{r}
+#| label: fig-erp
+#| fig-cap: Grand Average ERPs for the three target electrodes (Fz, Cz, Pz). The shaded window represents the target time window for our analysis of the N4 ERP component.
+#| echo: false
+
+ggplot(grand.average.erp, aes(x=t, y=m, ymin=m-se, ymax=m+se, color=condition, fill=condition))+
+  facet_wrap(vars(electrode))+
+  geom_vline(xintercept = 0)+
+  geom_hline(yintercept = 0)+
+  annotate("rect", fill="black", alpha=0.1, xmin=min(target.window),xmax=max(target.window), ymin=-5, ymax=5)+
+  labs(x="Time relative to stimulus onset (ms)", y="Mean voltage (microvolts)")+
+  geom_line()+
+  theme_minimal()+
+  theme(panel.grid = element_blank())
+
+```
