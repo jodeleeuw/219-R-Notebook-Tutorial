@@ -1,7 +1,9 @@
 ---
 title: "An ERP study on metaphorical language processing"
 author: "Josh de Leeuw"
-format: html
+format: 
+  html:
+    df-print: kable
 editor: visual
 ---
 
@@ -14,6 +16,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(ez)
+library(apaTables)
 
 ```
 
@@ -70,11 +73,11 @@ behavioral.summary <- behavioral.data %>%
 
 ```
 
-We checked for comprehension accuracy of the sentences by looking at the percent of "sensible" responses for each sentence type. Participants said the sentences made sense more in the literal (*M* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(SD) %>% round(2)`%) and anomalous (*M* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(SD) %>% round(2)`%) conditions than in the metaphorical condition (*M* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(SD) %>% round(2)`%), suggesting that the metaphorical meanings were slightly more difficult to understand (see @fig-behavioral-accuracy ).
+We checked for comprehension accuracy of the sentences by asking participants whether a given sentence made sense. For literal and metaphorical sentences, the answer was always yes, and for anomalous sentences the answer was always no. Participants said the sentences made sense more in the literal (*M* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Literal") %>% pull(SD) %>% round(2)`%) condition than in the metaphorical condition (*M* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Metaphorical") %>% pull(SD) %>% round(2)`%), suggesting that the metaphorical meanings were slightly more difficult to understand (see @fig-behavioral-accuracy ). Participants correctly identified the anomalous sentences as being not sensible (*M* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(M) %>% round(2)`%, *SD* = `r behavioral.summary %>% filter(Condition == "Anomalous") %>% pull(SD) %>% round(2)`%) at a similar level to the literal sentences.
 
 ```{r}
 #| label: fig-behavioral-accuracy
-#| fig-cap: The number of correct responses to the comprehension questions was slightly lower for metaphorical sentences.
+#| fig-cap: The number of correct responses to the sensibility judgments was slightly lower for metaphorical sentences.
 #| echo: false
 
 ggplot(behavioral.data, aes(x=Condition, y=CorrectResponses, color=Condition))+
@@ -146,6 +149,8 @@ ggplot(grand.average.erp, aes(x=t, y=m, ymin=m-se, ymax=m+se, color=condition, f
 
 #### Is there a difference in N400 for different sentence types?
 
+To see if the amplitude of the N400 differed by sentence type, we ran a 3 (sentence type) x 4 (electrode site) repeated-measures ANOVA. As shown in @tbl-anova, there was a main effect of electrode, but no effect of sentence type.
+
 ```{r}
 #| label: calculate anova data
 #| echo: false
@@ -160,10 +165,28 @@ erp.anova.data <- eeg.data %>%
 ```
 
 ```{r}
-#| label: run ANOVA
+#| label: tbl-anova
+#| tbl-cap: Repeated measures ANOVA analysis of mean amplitude in the 300-500ms window post-stimulus onset.
 #| echo: false
 
 erp.anova <- ezANOVA(erp.anova.data, dv=mean.subject.amplitude, within=c(condition, electrode), wid=subject)
 
 erp.anova$ANOVA
 ```
+
+#### Is there a standard N400 of literal v. anomalous?
+
+```{r}
+#| label: Follow up t-test example
+#| echo: false
+#| message: false
+
+erp.data.t.test <- erp.anova.data %>%
+  group_by(subject, condition) %>%
+  filter(condition %in% c("Literal", "Anomalous")) %>%
+  summarize(M = mean(mean.subject.amplitude))
+
+erp.t.test <- t.test(M ~ condition, data=erp.data.t.test, paired=T)
+```
+
+To check for the standard N400 effect, we average across all electrode sites and compared the amplitude for literal and anomalous sentences using a paired t-test. There was no significant effect of sentence type, *t*(`r erp.t.test$parameter`) = `r erp.t.test$statistic`, *p* = `r erp.t.test$p.value`.

@@ -102,13 +102,13 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 
 </div>
-<p>We checked for comprehension accuracy of the sentences by looking at the percent of “sensible” responses for each sentence type. Participants said the sentences made sense more in the literal (<em>M</em> = 92.16%, <em>SD</em> = 6.74%) and anomalous (<em>M</em> = 94.67%, <em>SD</em> = 6.04%) conditions than in the metaphorical condition (<em>M</em> = 81.5%, <em>SD</em> = 10.82%), suggesting that the metaphorical meanings were slightly more difficult to understand (see <a href="#fig-behavioral-accuracy">Figure&nbsp;1</a> ).</p>
+<p>We checked for comprehension accuracy of the sentences by asking participants whether a given sentence made sense. For literal and metaphorical sentences, the answer was always yes, and for anomalous sentences the answer was always no. Participants said the sentences made sense more in the literal (<em>M</em> = 92.16%, <em>SD</em> = 6.74%) condition than in the metaphorical condition (<em>M</em> = 81.5%, <em>SD</em> = 10.82%), suggesting that the metaphorical meanings were slightly more difficult to understand (see <a href="#fig-behavioral-accuracy">Figure&nbsp;1</a> ). Participants correctly identified the anomalous sentences as being not sensible (<em>M</em> = 94.67%, <em>SD</em> = 6.04%) at a similar level to the literal sentences.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-behavioral-accuracy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="erp_notebook_files/figure-html/fig-behavioral-accuracy-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: The number of correct responses to the comprehension questions was slightly lower for metaphorical sentences.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: The number of correct responses to the sensibility judgments was slightly lower for metaphorical sentences.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -138,17 +138,82 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="is-there-a-difference-in-n400-for-different-sentence-types" class="level4">
 <h4 class="anchored" data-anchor-id="is-there-a-difference-in-n400-for-different-sentence-types">Is there a difference in N400 for different sentence types?</h4>
+<p>To see if the amplitude of the N400 differed by sentence type, we ran a 3 (sentence type) x 4 (electrode site) repeated-measures ANOVA. As shown in <a href="#tbl-anova">Table&nbsp;1</a>, there was a main effect of electrode, but no effect of sentence type.</p>
 <div class="cell">
 
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>               Effect DFn DFd         F           p p&lt;.05         ges
-2           condition   2  20 2.5643280 0.102001689       0.054443805
-3           electrode   3  30 4.5657241 0.009472079     * 0.081915193
-4 condition:electrode   6  60 0.8062955 0.569049857       0.009985573</code></pre>
+<div class="cell-output-display">
+<div class="kable-table">
+<div id="tbl-anova" class="anchored">
+<table class="table table-sm table-striped">
+<caption>Table&nbsp;1: Repeated measures ANOVA analysis of mean amplitude in the 300-500ms window post-stimulus onset.</caption>
+<colgroup>
+<col style="width: 4%">
+<col style="width: 29%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Effect</th>
+<th style="text-align: right;">DFn</th>
+<th style="text-align: right;">DFd</th>
+<th style="text-align: right;">F</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: left;">p&lt;.05</th>
+<th style="text-align: right;">ges</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">condition</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2.5643280</td>
+<td style="text-align: right;">0.1020017</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">0.0544438</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">electrode</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">4.5657241</td>
+<td style="text-align: right;">0.0094721</td>
+<td style="text-align: left;">*</td>
+<td style="text-align: right;">0.0819152</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">condition:electrode</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">0.8062955</td>
+<td style="text-align: right;">0.5690499</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">0.0099856</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
+</div>
+</div>
+</section>
+<section id="is-there-a-standard-n400-of-literal-v.-anomalous" class="level4">
+<h4 class="anchored" data-anchor-id="is-there-a-standard-n400-of-literal-v.-anomalous">Is there a standard N400 of literal v. anomalous?</h4>
+<div class="cell">
+
+</div>
+<p>To check for the standard N400 effect, we average across all electrode sites and compared the amplitude for literal and anomalous sentences using a paired t-test. There was no significant effect of sentence type, <em>t</em>(10) = -1.397561, <em>p</em> = 0.1924757.</p>
 </section>
 </section>
 </section>
