@@ -11,12 +11,23 @@ editor: visual
 #| echo: false
 #| label: Load R libraries
 #| warning: false
+#| message: false
 
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(ez)
-library(apaTables)
+library(osfr)
+```
+
+```{r}
+#| label: grab the data files
+#| echo: false
+#| include: false
+ 
+osf_retrieve_node("62qf4") %>%
+  osf_ls_files() %>%
+  osf_download(path="data/", conflicts="skip")
 
 ```
 
@@ -39,10 +50,7 @@ behavioral.data <- read_csv('data/behavioral_data_tidy.csv')
 #| echo: false
 #| label: Count number of subjects
 
-n.subjects <- behavioral.data %>% 
-  group_by(Subject) %>% 
-  tally() %>% 
-  nrow()
+n.subjects <- behavioral.data %>% pull(Subject) %>% unique() %>% length()
 ```
 
 ### Participants
