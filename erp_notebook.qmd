@@ -8,11 +8,8 @@ editor: visual
 ---
 
 ```{r}
-#| echo: false
 #| label: Load R libraries
-#| warning: false
-#| message: false
-
+#| include: false
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -21,8 +18,7 @@ library(osfr)
 ```
 
 ```{r}
-#| label: grab the data files
-#| echo: false
+#| label: Get the data files from the OSF
 #| include: false
  
 osf_retrieve_node("62qf4") %>%
@@ -38,17 +34,15 @@ This is a study about metaphor using ERP methods.
 ## Methods
 
 ```{r}
-#| echo: false
-#| message: false
 #| label: Load behavioral data
-
+#| include: false
 behavioral.data <- read_csv('data/behavioral_data_tidy.csv')
 
 ```
 
 ```{r}
-#| echo: false
 #| label: Count number of subjects
+#| include: false
 
 n.subjects <- behavioral.data %>% pull(Subject) %>% unique() %>% length()
 ```
@@ -71,8 +65,7 @@ Put electrodes on head. Voltages go brrrrrrr.
 
 ```{r}
 #| label: Summarize behavioral data
-#| message: false
-#| echo: false
+#| include: false
 
 behavioral.summary <- behavioral.data %>%
   mutate(PercentCorrect = CorrectResponses/29 * 100) %>%
@@ -101,8 +94,7 @@ We measured the amplitude of the ERP in the 300-500ms window at four electrode s
 
 ```{r}
 #| label: Load EEG data
-#| echo: false
-#| message: false
+#| include: false
 
 eeg.data <- read_csv('data/voltage_data_tidy.csv')
 ```
@@ -111,14 +103,13 @@ eeg.data <- read_csv('data/voltage_data_tidy.csv')
 #| label: Define ERP electrodes and window
 #| echo: false
 
-target.electrodes <- c(11,24,124,129)
+target.electrodes <- c(11, 24, 124, 129)
 target.window <- 300:500
 ```
 
 ```{r}
 #| label: Calculate grand average ERPs
-#| echo: false
-#| message: false
+#| include: false
 
 grand.average.erp <- eeg.data %>%
   group_by(t, electrode, condition) %>%
@@ -186,8 +177,7 @@ erp.anova$ANOVA
 
 ```{r}
 #| label: Follow up t-test example
-#| echo: false
-#| message: false
+#| include: false
 
 erp.data.t.test <- erp.anova.data %>%
   group_by(subject, condition) %>%
